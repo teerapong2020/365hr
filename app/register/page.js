@@ -41,6 +41,11 @@ export default function Page() {
 
   return (
     <>
+    {state.message && (
+      <div className={`p-4 mb-4 text-sm ${state.success ? 'text-green-700 bg-green-100' : 'text-red-700 bg-red-100'} rounded`}>
+        {state.message}
+      </div>
+    )}
       <h1 className="text-xl font-bold mb-4">Register</h1>
       <form action={handleAction} className="space-y-4">
         <div>

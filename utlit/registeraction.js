@@ -1,5 +1,5 @@
 "use server";
-import connection from "@/lib/connect_db";
+import connection from "./connect_db";
 import bcrypt from "bcrypt";
 import { redirect } from "next/navigation";
 
@@ -26,10 +26,11 @@ export async function registerAction(prevState,formData) {
 
   const hashedPassword = await bcrypt.hash(password, 10);
 
-  await connection.query(
+  const [result] = await connection.query(
     "INSERT INTO users (email, password, role) VALUES (?, ?, ?)",
     [email, hashedPassword, "hr"]
   );
-    redirect("/profile"); 
+  const userId = result.insertId;
+    redirect(`/profile${userId}`); 
 
 }

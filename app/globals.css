@@ -1,3 +1,18 @@
 @import "tailwindcss";
 
 
+.loading-spinner {
+  animation: spin 1s linear infinite;
+  border-radius: 9999px;
+  height: 4rem;
+  width: 4rem;
+  border-top-width: 2px;
+  border-bottom-width: 2px;
+  border-color: #1a202c;
+  border-style: solid;
+}
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

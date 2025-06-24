@@ -1,7 +1,8 @@
 "use server";
-import connection from "@/lib/connect_db";
+import connection from "./connect_db";
 import bcrypt from "bcrypt";
 import { redirect } from "next/navigation";
+
 export async function loginAction(prevState,formData) {
   const email = formData.get("email");
   const password = formData.get("password");
@@ -35,5 +36,5 @@ export async function loginAction(prevState,formData) {
       };
     }
 
-    redirect("/profile");
+    redirect(`/profile/${user.id}`); 
 }

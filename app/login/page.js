@@ -1,11 +1,10 @@
 "use client";
-import { useState } from "react";
+import { useState,useEffect } from "react";
 import { loginAction } from "@/utlit/loginaction";
 import { useActionState } from "react";
 import Link from "next/link";
 
 const initState = {
-  // แก้ไข initSate เป็น initState
   loading: false,
   message: "",
   success: false,
@@ -16,27 +15,30 @@ export default function Page() {
   const [password, setPassword] = useState("");
   const [state, formAction, isPending] = useActionState(loginAction, initState);
 
+  useEffect(() => {
+  if (state.message) {
+    alert(state.message);
+  }
+}, [state.message]);
+
   const emailFormat = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
   const handleAction = (formData) => {
     const emailValue = formData.get("email");
-    const passwordValue = formData.get("password");
-
-    if (!emailValue || !passwordValue) {
-      alert("❗ กรุณากรอกข้อมูลให้ครบ");
-      return;
-    }
     if (!emailFormat.test(emailValue)) {
       alert("❗ กรุณากรอกอีเมลให้ถูกต้อง");
       return;
     }
-
     formAction(formData);
+    setTimeout(() => {
+      if(state.message) {
+        alert(state.message);
+      }
+    }, 100);
   };
 
   return (
     <>
-      <div></div>
       <h1 className="text-xl font-bold mb-4">Login</h1>
       <form action={handleAction} className="space-y-4">
         <div>
