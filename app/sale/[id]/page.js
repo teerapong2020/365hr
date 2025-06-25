@@ -1,22 +1,18 @@
-import AddSale from "@/app/component/addsale";
+// /app/customer/page.jsx
 import connection from "@/utlit/lib/connect_db";
-import SaleList from "@/app/component/salelist";
+import AddCustomer from "@/app/component/addcustomer";
+import CustomerList from "@/app/component/customerlist";
 import Link from "next/link";
 
 export default async function Page({ params }) {
   const userId = await params;
-  const [users] = await connection.query("SELECT * FROM users WHERE id = ?", [
-    userId.id,
-  ]);
-  const [sale] = await connection.query(
-    "select * from users where created_by = ?",
-    [userId.id]
-  );
+  const [users] = await connection.query("SELECT * FROM users WHERE id = ?", [userId.id]);
+  const [customers] = await connection.query("SELECT * FROM customers WHERE created_by = ?", [userId.id]);
 
   const user = users[0];
 
   return (
-    <div className="mx-8">
+   <div className="mx-8">
       <div className="flex my-4 ">
         <div>
           <span className="font-bold">role:</span> {user.role}
@@ -44,8 +40,8 @@ export default async function Page({ params }) {
           </button>
         </Link>
       </div>
-      <AddSale userData={user} />
-      <SaleList sale={sale} />
+      <AddCustomer userData={user} />
+      <CustomerList customers={customers} />
     </div>
   );
 }

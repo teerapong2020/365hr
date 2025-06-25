@@ -8,17 +8,24 @@ export default function EditProfileForm({ user }) {
   const [fullname, setFullname] = useState(user.fullname || "");
   const [lastname, setLastname] = useState(user.lastname || "");
   const [phone, setPhone] = useState(user.phone || "");
+  const [isfirst, setIsfirst] = useState(user.isfirst);
   const [isPending, setIsPending] = useState(false);
   const router = useRouter();
+
+  const phoneRegex = /^0[0-9]{9}$/;
+  const isValidPhone = phoneRegex.test(phone);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsPending(true);
-
+    setIsfirst(false);
     try {
-      const result = await updateUser(user.id, { fullname, lastname, phone });
-      const phoneRegex = /^0[0-9]{9}$/;
-      const isValidPhone = phoneRegex.test(phone);
+      const result = await updateUser(user.id, {
+        fullname,
+        lastname,
+        phone,
+        isfirst,
+      });
       if (!isValidPhone) {
         alert("กรุณากรอกเบอร์โทรให้ถูกต้อง");
         return;
@@ -69,6 +76,7 @@ export default function EditProfileForm({ user }) {
         disabled
         className="border p-2 w-full bg-gray-100"
       />
+      <input type="hidden" value={user.isfirst}></input>
       <button
         type="submit"
         disabled={isPending}

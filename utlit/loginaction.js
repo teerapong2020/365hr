@@ -2,39 +2,67 @@
 import connection from "./lib/connect_db";
 import bcrypt from "bcrypt";
 import { redirect } from "next/navigation";
+import jwt from "jsonwebtoken";
+import { cookies } from "next/headers";
 
-export async function loginAction(prevState,formData) {
+export async function loginAction(prevState, formData) {
   const email = formData.get("email");
   const password = formData.get("password");
 
   if (!email || !password) {
-     return {
-        loading: false,
-        message: "ข้อมูลไม่ครบ",
-        success: false,
-      };
+    return {
+      loading: false,
+      message: "ข้อมูลไม่ครบ",
+      success: false,
+    };
   }
 
-  const [checkEmail] = await connection.query("SELECT * FROM users WHERE email = ?", [email]);
+  const [checkEmail] = await connection.query(
+    "SELECT * FROM users WHERE email = ?",
+    [email]
+  );
   if (checkEmail.length == 0) {
-       return {
-        loading: false,
-        message: "ไม่มีอีเมลนี้ในระบบ",
-        success: false,
-      };
+    return {
+      loading: false,
+      message: "ไม่มีอีเมลนี้ในระบบ",
+      success: false,
+    };
   }
 
-  const user = checkEmail[0]
+  const user = checkEmail[0];
   const isPasswordValid = await bcrypt.compare(password, user.password);
-    
-    if (!isPasswordValid) {
-      return {
-        loading: false,
-        message: "รหัสผ่านไม่ถูกต้อง",
-        success: false,
-        user: null,
-      };
-    }
 
-    redirect(`/profile/${user.id}`); 
+  if (!isPasswordValid) {
+    return {
+      loading: false,
+      message: "รหัสผ่านไม่ถูกต้อง",
+      success: false,
+      user: null,
+    };
+  }
+
+  if (user.isfirst == "true") {
+    redirect(`/profile/${user.id}`);
+  }
+
+  const token = jwt.sign(user, process.env.JWT_SECRET, { expiresIn: "1h" });
+
+  // เก็บใน cookie
+  await cookies().set("token", token, {
+    httpOnly: true,
+    secure: true,
+    path: "/",
+  });
+
+  if (user.role === "hr") {
+    redirect(`/hr/${user.id}`);
+  } else if (user.role === "salesman") {
+    redirect(`/sale/${user.id}`);
+  } else {
+    return {
+      loading: false,
+      message: "ไม่พบสิทธิ์เข้าใช้งาน",
+      success: false,
+    };
+  }
 }

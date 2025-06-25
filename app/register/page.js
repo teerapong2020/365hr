@@ -40,14 +40,9 @@ export default function Page() {
   };
 
   return (
-    <>
-    {state.message && (
-      <div className={`p-4 mb-4 text-sm ${state.success ? 'text-green-700 bg-green-100' : 'text-red-700 bg-red-100'} rounded`}>
-        {state.message}
-      </div>
-    )}
-      <h1 className="text-xl font-bold mb-4">Register</h1>
-      <form action={handleAction} className="space-y-4">
+    <div className="w-screen flex justify-center" >
+      <form action={handleAction} className="space-y-4 w-1/3 max-md:w-full mx-8">
+         <img src='/logo.png' width={"120px"} className=' rounded-full w-1/3 mx-auto'></img>
         <div>
           <label className="block text-lg font-semibold">Email</label>
           <input
@@ -93,16 +88,16 @@ export default function Page() {
         <button
           type="submit"
           disabled={isPending}
-          className="bg-blue-500 text-white p-2 rounded hover:bg-blue-600 transition-colors w-full disabled:opacity-50 disabled:cursor-not-allowed"
+          className="bg-blue-500 text-white p-2 rounded hover:bg-black transition-colors w-full disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {isPending ? "กำลังลงทะเบียน..." : "Register"}
         </button>
-      </form>
-           <Link href="/login">
-        <button className="bg-blue-500 text-white w-full p-2 rounded hover:bg-blue-600 transition-colors text-center mt-4">
+             <Link href="/login">
+        <button className=" text-black w-full p-2 rounded hover:text-blue-600 transition-colors text-center mt-4">
           login
         </button>
       </Link>
-    </>
+      </form>
+    </div>
   );
 }

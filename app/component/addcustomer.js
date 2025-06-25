@@ -1,24 +1,17 @@
 'use client'
-import { useActionState, useEffect, useState } from 'react'
-import { postUserById } from '@/utlit/useraction'
-import { useRouter } from 'next/navigation'
+import { useActionState, useState } from 'react'
+import { postCustomers } from '@/utlit/customeraction'
 
 const initialState = {
   message: "",
   success: false,
 }
 
-export default function AddSale({ userData }) { 
+export default function AddCustomer({ userData }) { 
   const [isOpen, setIsOpen] = useState(false)
-  const [state, formAction] = useActionState(postUserById, initialState)
-  const route = useRouter()
+  const [state, formAction] = useActionState(postCustomers, initialState)
+//   console.log(userData.id);
   
-  useEffect=(()=>{
-    if(state.success =="true"){
-      setIsOpen(false)
-      route.refresh()
-    }
-  },[state.success])
   const handleOpenModal = () => {
     setIsOpen(true)
   }
@@ -26,8 +19,9 @@ export default function AddSale({ userData }) {
   const handleCloseModal = () => {
     setIsOpen(false)
   }
+
   const handleSubmit=()=>{
-      setTimeout(()=>{
+    setTimeout(()=>{
           alert("เพิ่มข้อมูลเรียบร้อย")
     window.location.reload()
     },300)
@@ -89,29 +83,9 @@ export default function AddSale({ userData }) {
                     className='border border-gray-300 rounded-md w-full p-2'
                   />
                 </div>
-                
-                <div>
-                  <label className='block text-sm font-medium mb-2'>Password</label>
-                  <input
-                    name='password'
-                    type='password'
-                    required
-                    className='border border-gray-300 rounded-md w-full p-2'
-                  />
-                </div>
-                
-                <div>
-                  <label className='block text-sm font-medium mb-2'>Confirm Password</label>
-                  <input
-                    name='confirmPassword'
-                    type='password'
-                    required
-                    className='border border-gray-300 rounded-md w-full p-2'
-                  />
-                </div>
                 <input
                 type='hidden'
-                name='create_by'
+                name='created_by'
                 value={userData.id}
                 ></input>
               </div>
