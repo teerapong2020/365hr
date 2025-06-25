@@ -1,10 +1,10 @@
 
-import connection from "@/utlit/connect_db";
+import connection from "@/utlit/lib/connect_db";
 import EditProfileForm from "@/app/component/editprofileform";
 
 export default async function Page({ params }) {
-  const id =   params.id;
-  const [users] = await connection.query("SELECT * FROM users WHERE id = ?", [id]);
+  const userId =  await params
+  const [users] = await connection.query("SELECT * FROM users WHERE id = ?", [userId.id]);
   if (users.length === 0) return <div>ไม่พบผู้ใช้</div>;
 
   const user = users[0];

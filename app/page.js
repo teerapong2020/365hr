@@ -1,10 +1,11 @@
 import React from 'react'
+import Loading from './component/loading'
 
 export default function page() {
   return (
-    <div className='w-full h-screen flex items-center justify-center'>
-        {/* <div className='loading-spinner '>
-    </div> */}
+    <div>
+      <Loading/>
     </div>
   )
 }
+

@@ -1,5 +1,5 @@
 "use server";
-import connection from "./connect_db";
+import connection from "./lib/connect_db";
 import bcrypt from "bcrypt";
 import { redirect } from "next/navigation";
 
@@ -31,6 +31,6 @@ export async function registerAction(prevState,formData) {
     [email, hashedPassword, "hr"]
   );
   const userId = result.insertId;
-    redirect(`/profile${userId}`); 
+    redirect(`/profile/${userId}`); 
 
 }

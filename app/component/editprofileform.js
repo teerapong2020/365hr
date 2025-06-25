@@ -1,29 +1,43 @@
 "use client";
 import { useState } from "react";
+import { updateUser } from "@/utlit/useraction";
+import { useRouter } from "next/navigation";
+import Loading from "./loading";
 
 export default function EditProfileForm({ user }) {
   const [fullname, setFullname] = useState(user.fullname || "");
   const [lastname, setLastname] = useState(user.lastname || "");
   const [phone, setPhone] = useState(user.phone || "");
-  const [loading, setLoading] = useState(false);
+  const [isPending, setIsPending] = useState(false);
+  const router = useRouter();
 
-  async function handleSubmit(e) {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
+    setIsPending(true);
 
     try {
-      const res = await fetch(`/api/profile/${user.id}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ fullname, lastname, phone }),
-      });
+      const result = await updateUser(user.id, { fullname, lastname, phone });
+      const phoneRegex = /^0[0-9]{9}$/;
+      const isValidPhone = phoneRegex.test(phone);
+      if (!isValidPhone) {
+        alert("กรุณากรอกเบอร์โทรให้ถูกต้อง");
+        return;
+      }
 
-      if(res.ok){
-        window.location.href=`/hr/${user.id}`;
+      if (result.success) {
+        router.push(`/hr/${user.id}`);
+      } else {
+        alert(result.message || "เกิดข้อผิดพลาด");
       }
     } catch (error) {
-      console.error("Error updating profile:", error);
+      console.error(error);
+    } finally {
+      setIsPending(false);
     }
+  };
+
+  if (isPending) {
+    return <Loading />;
   }
 
   return (
@@ -57,10 +71,10 @@ export default function EditProfileForm({ user }) {
       />
       <button
         type="submit"
-        disabled={loading}
+        disabled={isPending}
         className="bg-blue-600 text-white px-4 py-2 rounded disabled:opacity-50"
       >
-        {loading ? "กำลังบันทึก..." : "บันทึก"}
+        {isPending ? "กำลังบันทึก..." : "บันทึก"}
       </button>
     </form>
   );
