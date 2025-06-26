@@ -25,7 +25,7 @@ export async function registerAction(prevState, formData) {
     .limit(1);
 
     if(existingError){
-      console.error(error);
+      console.error(existingError);
       
     }
 
