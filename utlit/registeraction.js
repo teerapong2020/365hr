@@ -1,14 +1,13 @@
 "use server";
-import supabase  from "./lib/connect_db";
+import supabase from "./lib/connect_db";
 import bcrypt from "bcrypt";
 import { redirect } from "next/navigation";
-import jwt from "jsonwebtoken"
+import jwt from "jsonwebtoken";
 import { cookies } from "next/headers";
 
 export async function registerAction(prevState, formData) {
   const email = formData.get("email");
   const password = formData.get("password");
-  const role = formData.get("role")
 
   if (!email || !password) {
     return {
@@ -24,12 +23,16 @@ export async function registerAction(prevState, formData) {
     .eq("email", email)
     .limit(1);
 
-    if(existingError){
-      console.error(existingError);
-      
-    }
+  if (existingError) {
+    console.error(existingError); // ✅ แก้ตรงนี้
+    return {
+      loading: false,
+      message: "เกิดข้อผิดพลาด",
+      success: false,
+    };
+  }
 
-  if (existing.length > 0) {
+  if (existing && existing.length > 0) {
     return {
       loading: false,
       message: "อีเมลนี้ถูกใช้ไปแล้ว",
@@ -39,19 +42,23 @@ export async function registerAction(prevState, formData) {
 
   const hashedPassword = await bcrypt.hash(password, 10);
 
-const { data: result, error } = await supabase
-  .from("users")
-  .insert([{ email, password: hashedPassword, role: "hr" }])
-  .select()
-  .single();
+  const { data: result, error } = await supabase
+    .from("users")
+    .insert([{ email, password: hashedPassword, role: "hr" }])
+    .select()
+    .single();
 
-if (error) {
-  console.error(error);
-  return;
-}
+  if (error) {
+    console.error(error);
+    return {
+      loading: false,
+      message: "ไม่สามารถลงทะเบียนได้",
+      success: false,
+    };
+  }
 
   const token = jwt.sign(
-    { id: result.insertId, email, role },
+    { id: result.id, email, role: "hr" },
     process.env.JWT_SECRET,
     { expiresIn: "1h" }
   );
@@ -61,6 +68,6 @@ if (error) {
     secure: true,
     path: "/",
   });
-  const userId = result.insertId;
-  redirect(`/profile/${userId}`);
+
+  redirect(`/profile/${result.id}`);
 }
