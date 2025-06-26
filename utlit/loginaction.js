@@ -55,7 +55,7 @@ if (error) {
   // เก็บใน cookie
   await cookies().set("token", token, {
     httpOnly: true,
-    secure: process.env.NODE_ENV,
+     secure: process.env.NODE_ENV === "production",
     path: "/",
   });
 
