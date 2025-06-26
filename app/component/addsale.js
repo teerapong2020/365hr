@@ -13,7 +13,7 @@ export default function AddSale({ userData }) {
   const [state, formAction] = useActionState(postUserById, initialState)
   const route = useRouter()
   
-  useEffect=(()=>{
+  useEffect(()=>{
     if(state.success =="true"){
       setIsOpen(false)
       route.refresh()

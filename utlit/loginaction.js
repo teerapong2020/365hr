@@ -1,5 +1,5 @@
 "use server";
-import connection from "./lib/connect_db";
+import supabase from "./lib/connect_db";
 import bcrypt from "bcrypt";
 import { redirect } from "next/navigation";
 import jwt from "jsonwebtoken";
@@ -17,10 +17,15 @@ export async function loginAction(prevState, formData) {
     };
   }
 
-  const [checkEmail] = await connection.query(
-    "SELECT * FROM users WHERE email = ?",
-    [email]
-  );
+const { data: checkEmail, error } = await supabase
+  .from("users")
+  .select("*")
+  .eq("email", email)
+  .limit(1);
+
+if (error) {
+  console.error(error);
+}
   if (checkEmail.length == 0) {
     return {
       loading: false,

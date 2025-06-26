@@ -1,13 +1,30 @@
 // /app/customer/page.jsx
-import connection from "@/utlit/lib/connect_db";
+import supabase from "@/utlit/lib/connect_db";
 import AddCustomer from "@/app/component/addcustomer";
 import CustomerList from "@/app/component/customerlist";
 import Link from "next/link";
 
 export default async function Page({ params }) {
   const userId = await params;
-  const [users] = await connection.query("SELECT * FROM users WHERE id = ?", [userId.id]);
-  const [customers] = await connection.query("SELECT * FROM customers WHERE created_by = ?", [userId.id]);
+const { data: users, error: userError } = await supabase
+  .from("users")
+  .select("*")
+  .eq("id", userId.id);
+
+if (userError) {
+  console.error("Error loading user:", userError.message);
+  return <div>Error loading user.</div>;
+}
+
+const { data: customers, error: customerError } = await supabase
+  .from("customers")
+  .select("*")
+  .eq("created_by", userId.id);
+
+if (customerError) {
+  console.error("Error loading customers:", customerError.message);
+  return <div>Error loading customers.</div>;
+}
 
   const user = users[0];
 
