@@ -3,7 +3,7 @@ import supabase from "@/utlit/lib/connect_db";
 import EditProfileForm from "@/app/component/editprofileform";
 
 export default async function Page({ params }) {
-  const userId =  await params
+  const userId =  await params?.id
   const { data: users, error } = await supabase
     .from("users")
     .select("*")

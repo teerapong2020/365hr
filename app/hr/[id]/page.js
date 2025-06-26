@@ -4,13 +4,13 @@ import Link from "next/link";
 import supabase from "@/utlit/lib/connect_db"; 
 
 export default async function Page({ params }) {
-  const userId =  await params;
+  const userId =  await params?.id;
 
   // 1. ดึง user ที่ login อยู่
   const { data: users, error: userError } = await supabase
     .from("users")
     .select("*")
-    .eq("id", userId.id)
+    .eq("id", userId)
     .limit(1);
 
   if (userError || !users?.length) {
@@ -24,7 +24,7 @@ export default async function Page({ params }) {
   const { data: sale, error: saleError } = await supabase
     .from("users")
     .select("*")
-    .eq("created_by", userId.id);
+    .eq("created_by", userId);
 
   if (saleError) {
     console.error("Error loading sale:", saleError.message);

@@ -63,11 +63,12 @@ export async function registerAction(prevState, formData) {
     { expiresIn: "1h" }
   );
 
-  await cookies().set("token", token, {
-    httpOnly: true,
-    secure: true,
-    path: "/",
-  });
+const cookieStore = await cookies();
+cookieStore.set("token", token, {
+  httpOnly: true,
+  secure: process.env.NODE_ENV,
+  path: "/",
+});
 
   redirect(`/profile/${result.id}`);
 }

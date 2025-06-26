@@ -5,11 +5,11 @@ import CustomerList from "@/app/component/customerlist";
 import Link from "next/link";
 
 export default async function Page({ params }) {
-  const userId = await params;
+  const userId =  await params?.id;
 const { data: users, error: userError } = await supabase
   .from("users")
   .select("*")
-  .eq("id", userId.id);
+  .eq("id", userId);
 
 if (userError) {
   console.error("Error loading user:", userError.message);
@@ -19,7 +19,7 @@ if (userError) {
 const { data: customers, error: customerError } = await supabase
   .from("customers")
   .select("*")
-  .eq("created_by", userId.id);
+  .eq("created_by", userId);
 
 if (customerError) {
   console.error("Error loading customers:", customerError.message);
